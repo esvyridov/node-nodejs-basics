@@ -1,5 +1,23 @@
+import { rm } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const ENOENT_ERROR_CODE = 'ENOENT';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const remove = async () => {
-    // Write your code here 
+    const fileToDeletePath = resolve(__dirname, 'files', 'fileToRemove.txt');
+
+    try {
+        await rm(fileToDeletePath);
+    } catch (err) {
+        if (err.code === ENOENT_ERROR_CODE) {
+            throw new Error('FS operation failed');
+        }
+        throw err;
+    }
 };
 
 await remove();

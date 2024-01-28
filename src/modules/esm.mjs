@@ -1,7 +1,14 @@
-const path = require('path');
-const { release, version } = require('os');
-const { createServer: createServerHttp } = require('http');
-require('./files/c');
+import { sep, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { release, version } from 'node:os';
+import { createServer } from 'node:http';
+import { createRequire } from 'node:module';
+
+await import('./files/c.js');
+
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const random = Math.random();
 
@@ -15,12 +22,12 @@ if (random > 0.5) {
 
 console.log(`Release ${release()}`);
 console.log(`Version ${version()}`);
-console.log(`Path segment separator is "${path.sep}"`);
+console.log(`Path segment separator is "${sep}"`);
 
 console.log(`Path to current file is ${__filename}`);
 console.log(`Path to current directory is ${__dirname}`);
 
-const myServer = createServerHttp((_, res) => {
+const myServer = createServer((_, res) => {
     res.end('Request accepted');
 });
 
@@ -33,8 +40,7 @@ myServer.listen(PORT, () => {
     console.log('To terminate it, use Ctrl+C combination');
 });
 
-module.exports = {
+export {
     unknownObject,
     myServer,
 };
-
